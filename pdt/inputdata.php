@@ -41,25 +41,30 @@ function product($ean){
 
 if(isset($_POST['submit'])){
     if($_POST['ean'] != ''){
-	$sql1 = mysql_query("select * from product where ean = '" . $_POST['ean'] . "'");
-	$row1 = mysql_fetch_array($sql1);
-	$arc = $row1['article'];
-	$sql2 = mysql_query("select * from stockbin where storagebin = '" . $_SESSION['binname'] . "' and articleno = '" . $arc . "'");
-	$cn = mysql_num_rows($sql2);
-	if($cn == ''){
-	echo 'Data Not Found';
-	}else{
-        $result = product($_POST['ean']);
-        if($result['success']){            
-            $_SESSION['ean'] = $_POST['ean'];
-            $_SESSION['uom'] = $result['data']['uom'];            
-            $_SESSION['productname'] = $result['data']['productname'];
-            $_SESSION['article'] = $result['data']['article'];
-            header('Location: inputbatch.php');
-            //header('Location: collectdata.php');
-        }else{
-            $_SESSION['message'] = $result['error'];
-        }
+		$sql1 = mysql_query("select * from product where ean = '" . $_POST['ean'] . "'");
+		$row1 = mysql_fetch_array($sql1);
+		$arc = $row1['article'];
+		$sql2 = mysql_query("select * from stockbin where storagebin = '" . $_SESSION['binname'] . "' and articleno = '" . $arc . "'");
+		$cn = mysql_num_rows($sql2);
+		if($cn == ''){
+			echo 'Data Not Found';
+		}else{
+	        $result = product($_POST['ean']);
+	        if($result['success']){            
+	            $_SESSION['ean'] = $_POST['ean'];
+	            $_SESSION['uom'] = $result['data']['uom'];            
+	            $_SESSION['productname'] = $result['data']['productname'];
+	            $_SESSION['article'] = $result['data']['article'];
+	            $_SESSION['nopid'] = 0;
+	            header('Location: inputbatch.php');
+	        }else{
+	            $_SESSION['ean'] = $_POST['ean'];
+	            $_SESSION['uom'] = $product['uom'];
+	            $_SESSION['productname'] = $product['productname'];
+	            $_SESSION['article'] = $product['article'];
+	            $_SESSION['nopid'] = 1;
+	            header('Location: inputbatch.php');
+	        }
 		}
     }else{
         $_SESSION['message'] = "Product not found!";
